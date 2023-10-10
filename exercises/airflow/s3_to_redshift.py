@@ -29,6 +29,18 @@ def load_data_to_redshift():
         # redshift_hook = PostgresHook("redshift")
         # redshift_hook.run(sql_statements.COPY_ALL_TRIPS_SQL.format(aws_connection.login, aws_connection.password))
 
+    @task()
+    def check_greater_than_zero(*args, **kwargs):
+        table = kwargs["params"]["table"]
+        redshift_hook = PostgresHook("redshift")
+        records = redshift_hook.get_records(f"SELECT COUNT(*) FROM {table}")
+        if len(records) < 1 or len(records[0]) < 1:
+            raise ValueError(f"Data quality check failed. {table} returned no results")
+        num_records = records[0][0]
+        if num_records < 1:
+            raise ValueError(f"Data quality check failed. {table} contained 0 rows")
+        logging.info(f"Data quality on table {table} check passed with {records[0][0]} records")
+
     create_table_task=PostgresOperator(
         task_id="create_table",
         postgres_conn_id="redshift",
@@ -82,13 +94,26 @@ def load_data_to_redshift():
     )
 
     load_data = load_task()
+    check_trips_task = check_greater_than_zero(
+        params={
+            'table':'trips'
+        }
+    )
+
+    check_stations_task = check_greater_than_zero(
+        params={
+            'table': 'stations',
+        }
+    )
 
     ## commented because during first run,
     ## create_table succeeded, but location_traffic_task failed
     # create_table_task >> load_data
+    # load_data >> check_trips_task
     load_data >> begin_transaction
     begin_transaction >> drop_table
     drop_table >> create_and_insert_into_table
+    create_and_insert_into_table >> check_stations_task
 
 
 
