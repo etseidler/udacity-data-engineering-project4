@@ -3,11 +3,11 @@ import pendulum
 import os
 from airflow.decorators import dag
 from airflow.operators.dummy_operator import DummyOperator
-from final_project_operators.stage_redshift import StageToRedshiftOperator
-from final_project_operators.load_fact import LoadFactOperator
-from final_project_operators.load_dimension import LoadDimensionOperator
-from final_project_operators.data_quality import DataQualityOperator
-from udacity.common import final_project_sql_statements
+from .stage_redshift import StageToRedshiftOperator
+from .load_fact import LoadFactOperator
+from .load_dimension import LoadDimensionOperator
+from .data_quality import DataQualityOperator
+from . import final_project_sql_statements
 
 
 default_args = {
