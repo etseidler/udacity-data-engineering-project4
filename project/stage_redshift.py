@@ -11,7 +11,7 @@ class StageToRedshiftOperator(BaseOperator):
         FROM '{}'
         ACCESS_KEY_ID '{}'
         SECRET_ACCESS_KEY '{}'
-        JSON 'auto'
+        JSON {}
     """
 
     @apply_defaults
@@ -21,6 +21,7 @@ class StageToRedshiftOperator(BaseOperator):
                  table="",
                  s3_bucket="eric-seidler-airflow",
                  s3_key="",
+                 json="'auto'",
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
@@ -29,6 +30,7 @@ class StageToRedshiftOperator(BaseOperator):
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
         self.aws_credentials_id = aws_credentials_id
+        self.json = json
 
     def execute(self, context):
         metastoreBackend = MetastoreBackend()
@@ -45,7 +47,8 @@ class StageToRedshiftOperator(BaseOperator):
             self.table,
             s3_path,
             aws_connection.login,
-            aws_connection.password
+            aws_connection.password,
+            self.json
         )
         redshift.run(formatted_sql)
 
