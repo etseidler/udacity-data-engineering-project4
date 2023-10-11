@@ -1,4 +1,41 @@
 class SqlQueries:
+    staging_events_table_create = """
+        CREATE TABLE IF NOT EXISTS "staging_events" (
+            artist        TEXT,
+            auth          CHARACTER VARYING(20),
+            firstName     CHARACTER VARYING(100),
+            gender        CHAR(1),
+            itemInSession SMALLINT,
+            lastName      CHARACTER VARYING(100),
+            length        DOUBLE PRECISION,
+            level         CHARACTER VARYING(30),
+            location      TEXT,
+            method        CHARACTER VARYING(10),
+            page          CHARACTER VARYING(30),
+            registration  BIGINT,
+            sessionId     INT,
+            song          TEXT,
+            status        SMALLINT,
+            ts            BIGINT,
+            userAgent     TEXT,
+            userId        INT
+        );
+    """
+
+    staging_songs_table_create = """
+        CREATE TABLE IF NOT EXISTS "staging_songs" (
+            num_songs           SMALLINT,
+            artist_id           CHARACTER VARYING(30),
+            artist_latitude     DOUBLE PRECISION,
+            artist_longitude    DOUBLE PRECISION,
+            artist_location     TEXT,
+            name                TEXT,
+            song_id             CHARACTER VARYING(30),
+            title               TEXT,
+            duration            DOUBLE PRECISION,
+            year                SMALLINT
+        );
+    """
     songplay_table_insert = ("""
         SELECT
                 md5(events.sessionid || events.start_time) songplay_id,
