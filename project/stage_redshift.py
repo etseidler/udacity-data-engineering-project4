@@ -23,12 +23,14 @@ class StageToRedshiftOperator(BaseOperator):
                  s3_key="",
                  json="'auto'",
                  *args, **kwargs):
+        execution_date = kwargs['execution_date']
+        ds = kwargs['ds']
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
         self.table = table
         self.redshift_conn_id = redshift_conn_id
         self.s3_bucket = s3_bucket
-        self.s3_key = s3_key
+        self.s3_key = f"{s3_key}/{execution_date.year}/{execution_date.month}/{ds}-events.json"
         self.aws_credentials_id = aws_credentials_id
         self.json = json
 
