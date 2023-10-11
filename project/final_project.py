@@ -13,6 +13,11 @@ from . import final_project_sql_statements
 default_args = {
     'owner': 'udacity',
     'start_date': pendulum.now(),
+    'depends_on_past': False,
+    'retries': 3,
+    'retry_delay': timedelta(minutes=5),
+    'catchup': False,
+    'email_on_retry': False,
 }
 
 @dag(
@@ -26,10 +31,14 @@ def final_project():
 
     stage_events_to_redshift = StageToRedshiftOperator(
         task_id='Stage_events',
+        table='staging_events',
+        s3_key='log-data'
     )
 
     stage_songs_to_redshift = StageToRedshiftOperator(
         task_id='Stage_songs',
+        table='staging_songs',
+        s3_key='song-data-sample'
     )
 
     load_songplays_table = LoadFactOperator(
