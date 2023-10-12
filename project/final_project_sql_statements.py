@@ -36,6 +36,73 @@ class SqlQueries:
             year                SMALLINT
         );
     """
+    songplay_table_create = """
+        CREATE TABLE IF NOT EXISTS "songplays" (
+            songplay_id                 CHARACTER VARYING(32) NOT NULL,
+            start_time                  TIMESTAMP NOT NULL,
+            user_id                     INT NOT NULL,
+            level                       CHARACTER VARYING(30) NOT NULL,
+            song_id                     CHARACTER VARYING(30),
+            artist_id                   CHARACTER VARYING(30),
+            session_id                  INT NOT NULL,
+            location                    TEXT,
+            user_agent                  TEXT,
+            primary key(songplay_id),
+            foreign key(start_time)     references time(start_time),
+            foreign key(user_id)        references users(user_id),
+            foreign key(song_id)        references songs(song_id),
+            foreign key(artist_id)      references artists(artist_id)
+        );
+    """
+
+    user_table_create = """
+        CREATE TABLE IF NOT EXISTS "users" (
+            user_id     INT NOT NULL,
+            first_name  CHARACTER VARYING(100),
+            last_name   CHARACTER VARYING(100),
+            gender      CHAR(1),
+            level       CHARACTER VARYING(30) NOT NULL,
+            primary key(user_id)
+        );
+    """
+
+    song_table_create = """
+        CREATE TABLE IF NOT EXISTS "songs" (
+            song_id     CHARACTER VARYING(30) NOT NULL,
+            title       TEXT,
+            artist_id   CHARACTER VARYING(30),
+            year        SMALLINT NOT NULL,
+            duration    DOUBLE PRECISION NOT NULL,
+            primary key(song_id)
+        );
+    """
+
+    # NOTE: project spec has typo: "lattitude" is incorrect spelling.
+    # I intentionally chose the correct spelling for use in column below
+    artist_table_create = """
+        CREATE TABLE IF NOT EXISTS "artists" (
+            artist_id   CHARACTER VARYING(30) NOT NULL,
+            name        TEXT,
+            location    TEXT,
+            latitude    DOUBLE PRECISION,
+            longitude   DOUBLE PRECISION,
+            primary key(artist_id)
+        );
+    """
+
+    time_table_create = """
+        CREATE TABLE IF NOT EXISTS "time" (
+            start_time  TIMESTAMP NOT NULL,
+            hour        SMALLINT NOT NULL,
+            day         SMALLINT NOT NULL,
+            week        SMALLINT NOT NULL,
+            month       SMALLINT NOT NULL,
+            year        SMALLINT NOT NULL,
+            weekday     SMALLINT NOT NULL,
+            primary key(start_time)
+        );
+    """
+
     songplay_table_insert = ("""
         SELECT
                 md5(events.sessionid || events.start_time) songplay_id,
