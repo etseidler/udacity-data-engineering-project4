@@ -73,6 +73,7 @@ def final_project():
 
     run_quality_checks = DataQualityOperator(
         task_id='Run_data_quality_checks',
+        tables=['songplays', 'users', 'songs', 'artists', 'time']
     )
 
     end_operator = DummyOperator(task_id='End_execution')
