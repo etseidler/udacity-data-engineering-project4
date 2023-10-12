@@ -29,7 +29,7 @@ class SqlQueries:
             artist_latitude     DOUBLE PRECISION,
             artist_longitude    DOUBLE PRECISION,
             artist_location     TEXT,
-            name                TEXT,
+            artist_name         TEXT,
             song_id             CHARACTER VARYING(30),
             title               TEXT,
             duration            DOUBLE PRECISION,
@@ -105,7 +105,7 @@ class SqlQueries:
 
     songplay_table_insert = ("""
         SELECT
-                md5(events.sessionid || events.start_time) songplay_id,
+                md5(events.sessionid || events.start_time),
                 events.start_time,
                 events.userid,
                 events.level,
