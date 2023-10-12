@@ -11,7 +11,7 @@ class StageToRedshiftOperator(BaseOperator):
         FROM '{}'
         ACCESS_KEY_ID '{}'
         SECRET_ACCESS_KEY '{}'
-        JSON {}
+        JSON '{}'
     """
 
     @apply_defaults
@@ -21,7 +21,7 @@ class StageToRedshiftOperator(BaseOperator):
                  table="",
                  s3_bucket="eric-seidler-airflow",
                  s3_key="",
-                 json="'auto'",
+                 json="auto",
                  *args, **kwargs):
         execution_date = kwargs['execution_date']
         ds = kwargs['ds']
