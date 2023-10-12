@@ -6,7 +6,7 @@ from .stage_redshift import StageToRedshiftOperator
 from .load_fact import LoadFactOperator
 from .load_dimension import LoadDimensionOperator
 from .data_quality import DataQualityOperator
-from . import final_project_sql_statements
+from .final_project_sql_statements import SqlQueries
 
 
 default_args = {
@@ -31,7 +31,8 @@ def final_project():
     stage_events_to_redshift = StageToRedshiftOperator(
         task_id='Stage_events',
         table='staging_events',
-        s3_key='log-data'
+        s3_key='log-data',
+        json='s3://eric-seidler-airflow/log_json_path.json'
     )
 
     stage_songs_to_redshift = StageToRedshiftOperator(
@@ -42,22 +43,32 @@ def final_project():
 
     load_songplays_table = LoadFactOperator(
         task_id='Load_songplays_fact_table',
+        table='songplays',
+        sql=SqlQueries.songplay_table_insert
     )
 
     load_user_dimension_table = LoadDimensionOperator(
         task_id='Load_user_dim_table',
+        table='users',
+        sql=SqlQueries.user_table_insert
     )
 
     load_song_dimension_table = LoadDimensionOperator(
         task_id='Load_song_dim_table',
+        table='songs',
+        sql=SqlQueries.song_table_insert
     )
 
     load_artist_dimension_table = LoadDimensionOperator(
         task_id='Load_artist_dim_table',
+        table='artists',
+        sql=SqlQueries.artist_table_insert
     )
 
     load_time_dimension_table = LoadDimensionOperator(
         task_id='Load_time_dim_table',
+        table='time',
+        sql=SqlQueries.time_table_insert
     )
 
     run_quality_checks = DataQualityOperator(
